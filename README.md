@@ -147,9 +147,27 @@ console.log('Test Results:', testResults);
 
 ## Demo App 演示应用
 
-The package includes a complete demo app showcasing the CivicAuth functionality.
+The package includes a comprehensive demo app showcasing all CivicAuth functionality with professional UI/UX.
 
-包包含一个完整的演示应用，展示 CivicAuth 功能。
+包包含一个综合演示应用，展示所有 CivicAuth 功能，具有专业的 UI/UX。
+
+### Features 功能特性
+
+- ✅ **Real-time Status Updates** - Live authentication status display
+- ✅ **Professional Error Handling** - Comprehensive error categorization and user-friendly messages
+- ✅ **Token Management** - Secure token display with copy functionality
+- ✅ **Retry Mechanism** - Automatic retry for failed authentication attempts
+- ✅ **Configuration Validation** - Built-in validation for authentication parameters
+- ✅ **Professional UI Components** - Uses all Civic UI components for consistent design
+
+### 功能特性 (Features)
+
+- ✅ **实时状态更新** - 实时认证状态显示
+- ✅ **专业错误处理** - 综合错误分类和用户友好消息
+- ✅ **Token 管理** - 安全的 token 显示和复制功能
+- ✅ **重试机制** - 失败认证尝试的自动重试
+- ✅ **配置验证** - 认证参数的内置验证
+- ✅ **专业 UI 组件** - 使用所有 Civic UI 组件实现一致设计
 
 ### Running the Demo 运行演示
 
@@ -163,6 +181,18 @@ npm install
 
 # Run the demo app
 npm run demo:android
+```
+
+### Demo App Structure 演示应用结构
+
+```
+demo/
+├── App.tsx                    # Main app entry point
+├── screens/
+│   └── DemoLoginScreen.tsx    # Enhanced demo login screen
+└── utils/
+    ├── errorHandlers.ts       # Comprehensive error handling
+    └── authHelpers.ts         # Authentication utilities
 ```
 
 ## UI Components UI 组件

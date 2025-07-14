@@ -1,95 +1,217 @@
 /**
- * CivicAuth React Native Wrapper - Demo Login Screen
- * CivicAuth React Native 包装器 - 演示登录屏幕
+ * CivicAuth React Native Wrapper - Enhanced Demo Login Screen
+ * CivicAuth React Native 包装器 - 增强演示登录屏幕
  * 
- * This file contains the demo login screen that showcases the CivicAuth functionality
- * 此文件包含展示 CivicAuth 功能的演示登录屏幕
+ * This file contains the comprehensive demo login screen that showcases all CivicAuth functionality
+ * 此文件包含展示所有 CivicAuth 功能的综合演示登录屏幕
  * 
- * It demonstrates the loginWithCivic function with a clean, minimal UI following Civic's design
- * 它通过遵循 Civic 设计的简洁、极简 UI 演示 loginWithCivic 函数
+ * Features: Professional state management, real-time status updates, comprehensive error handling
+ * 特性：专业状态管理、实时状态更新、综合错误处理
  * 
  * Based on Civic Auth official documentation: https://docs.civic.com/
  * 基于 Civic Auth 官方文档：https://docs.civic.com/
  * 
- * Related files: demo/App.tsx, src/CivicAuthModule.ts
- * 相关文件：demo/App.tsx, src/CivicAuthModule.ts
+ * Related files: demo/App.tsx, src/CivicAuthModule.ts, src/components/
+ * 相关文件：demo/App.tsx, src/CivicAuthModule.ts, src/components/
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
   Alert,
   ScrollView,
+  Clipboard,
+  Dimensions,
 } from 'react-native';
 import { loginWithCivic } from '../../src/CivicAuthModule';
-import { AuthResult, LoginOptions } from '../../src/types';
+import { AuthResult, LoginOptions, AuthErrorType } from '../../src/types';
 import { CivicButton, CivicCard, CivicText, CivicSpinner } from '../../src/components';
+import { logError, getUserFriendlyMessage, formatErrorForUI } from '../utils/errorHandlers';
+import { createDemoConfig, configToLoginOptions, formatAuthResult } from '../utils/authHelpers';
 
 /**
- * Demo Login Screen Component
- * 演示登录屏幕组件
+ * Authentication State Type
+ * 认证状态类型
  * 
- * This component demonstrates the CivicAuth login functionality
- * 此组件演示 CivicAuth 登录功能
+ * Defines the possible authentication states
+ * 定义可能的认证状态
+ */
+type AuthState = 'idle' | 'loading' | 'success' | 'error';
+
+/**
+ * Enhanced Demo Login Screen Component
+ * 增强演示登录屏幕组件
+ * 
+ * This component demonstrates the complete CivicAuth functionality
+ * 此组件演示完整的 CivicAuth 功能
  */
 const DemoLoginScreen: React.FC = () => {
   // State management for authentication
   // 认证的状态管理
-  const [isLoading, setIsLoading] = useState(false);
+  const [authState, setAuthState] = useState<AuthState>('idle');
   const [authResult, setAuthResult] = useState<AuthResult | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [retryCount, setRetryCount] = useState<number>(0);
 
   /**
-   * Handle login with Civic
-   * 处理 Civic 登录
+   * Handle login with Civic authentication
+   * 处理 Civic 认证登录
    * 
    * Based on Civic Auth official documentation
    * 基于 Civic Auth 官方文档
    */
-  const handleLoginWithCivic = async () => {
+  const handleLoginWithCivic = useCallback(async () => {
     try {
-      setIsLoading(true);
+      // Reset state and start loading
+      // 重置状态并开始加载
+      setAuthState('loading');
       setAuthResult(null);
+      setErrorMessage('');
 
-      // Configure Civic Auth options based on official documentation
-      // 根据官方文档配置 Civic Auth 选项
-      const options: LoginOptions = {
-        clientId: 'demo-client-id', // Replace with your actual client ID
-        redirectUrl: 'civic-auth-demo://callback', // Your app's redirect URL
-        nonce: 'demo-nonce-' + Date.now(), // Anti-replay protection
-        displayMode: 'popup', // Login window presentation
-        scope: 'openid profile email'
-      };
+      // Configure Civic Auth options using helper utilities
+      // 使用辅助工具配置 Civic Auth 选项
+      const demoConfig = createDemoConfig();
+      const options = configToLoginOptions(demoConfig);
 
       // Call the loginWithCivic function
       // 调用 loginWithCivic 函数
       const result = await loginWithCivic(options);
 
+      // Update state based on result
+      // 根据结果更新状态
       setAuthResult(result);
-
+      
       if (result.success) {
-        Alert.alert(
-          'Success! 成功！',
-          'Authentication completed successfully. 认证成功完成。',
-          [{ text: 'OK 确定' }]
-        );
+        setAuthState('success');
+        setRetryCount(0); // Reset retry count on success
+        showSuccessAlert();
       } else {
-        Alert.alert(
-          'Error 错误',
-          result.error || 'Authentication failed. 认证失败。',
-          [{ text: 'OK 确定' }]
-        );
+        setAuthState('error');
+        setErrorMessage(result.error || 'Authentication failed');
+        showErrorAlert(result.error || 'Authentication failed');
       }
     } catch (error) {
       console.error('Login error:', error);
-      Alert.alert(
-        'Error 错误',
-        'An unexpected error occurred. 发生意外错误。',
-        [{ text: 'OK 确定' }]
-      );
-    } finally {
-      setIsLoading(false);
+      setAuthState('error');
+      
+      // Use error handling utilities
+      // 使用错误处理工具
+      logError(error, { context: 'DemoLoginScreen.handleLoginWithCivic' });
+      const errorMsg = getUserFriendlyMessage(error);
+      setErrorMessage(errorMsg);
+      showErrorAlert(errorMsg);
     }
+  }, []);
+
+  /**
+   * Handle retry login
+   * 处理重试登录
+   */
+  const handleRetry = useCallback(() => {
+    setRetryCount(prev => prev + 1);
+    handleLoginWithCivic();
+  }, [handleLoginWithCivic]);
+
+  /**
+   * Show success alert
+   * 显示成功提示
+   */
+  const showSuccessAlert = () => {
+    Alert.alert(
+      'Success! 成功！',
+      'Authentication completed successfully. 认证成功完成。',
+      [{ text: 'OK 确定' }]
+    );
+  };
+
+  /**
+   * Show error alert
+   * 显示错误提示
+   */
+  const showErrorAlert = (message: string) => {
+    Alert.alert(
+      'Error 错误',
+      message,
+      [
+        { text: 'Retry 重试', onPress: handleRetry },
+        { text: 'OK 确定' }
+      ]
+    );
+  };
+
+  /**
+   * Copy token to clipboard
+   * 复制 token 到剪贴板
+   */
+  const copyToClipboard = (text: string, label: string) => {
+    Clipboard.setString(text);
+    Alert.alert(
+      'Copied! 已复制！',
+      `${label} has been copied to clipboard. ${label} 已复制到剪贴板。`,
+      [{ text: 'OK 确定' }]
+    );
+  };
+
+  /**
+   * Get status color based on auth state
+   * 根据认证状态获取状态颜色
+   */
+  const getStatusColor = (): string => {
+    switch (authState) {
+      case 'success':
+        return '#10B981'; // Green
+      case 'error':
+        return '#EF4444'; // Red
+      case 'loading':
+        return '#2D8CFF'; // Civic Blue
+      default:
+        return '#6B7280'; // Gray
+    }
+  };
+
+  /**
+   * Get status text based on auth state
+   * 根据认证状态获取状态文本
+   */
+  const getStatusText = (): string => {
+    switch (authState) {
+      case 'success':
+        return 'Authentication Successful 认证成功';
+      case 'error':
+        return 'Authentication Failed 认证失败';
+      case 'loading':
+        return 'Authenticating... 认证中...';
+      default:
+        return 'Ready to Login 准备登录';
+    }
+  };
+
+  /**
+   * Render authentication status
+   * 渲染认证状态
+   */
+  const renderAuthStatus = () => {
+    return (
+      <CivicCard style={styles.statusCard}>
+        <CivicText variant="h3" weight="semibold" color={getStatusColor()} align="center">
+          {getStatusText()}
+        </CivicText>
+        {authState === 'loading' && (
+          <CivicSpinner 
+            size="medium" 
+            color="#2D8CFF" 
+            text="Processing authentication..." 
+            style={styles.spinner}
+          />
+        )}
+        {retryCount > 0 && (
+          <CivicText variant="caption" color="#6B7280" align="center" style={styles.retryText}>
+            Retry attempt: {retryCount} 重试次数：{retryCount}
+          </CivicText>
+        )}
+      </CivicCard>
+    );
   };
 
   /**
@@ -97,60 +219,159 @@ const DemoLoginScreen: React.FC = () => {
    * 渲染认证结果
    */
   const renderAuthResult = () => {
-    if (!authResult) return null;
+    if (!authResult || authState !== 'success') return null;
 
     return (
-      <View style={styles.resultContainer}>
-        <Text style={styles.resultTitle}>
-          {authResult.success ? 'Authenticated ✅' : 'Not authenticated ❌'}
-        </Text>
+      <CivicCard style={styles.resultCard}>
+        <CivicText variant="h3" weight="semibold" color="#1F2937" align="center" style={styles.resultTitle}>
+          Authentication Result 认证结果
+        </CivicText>
         
-        {authResult.success && (
-          <ScrollView style={styles.tokenContainer}>
-            {authResult.idToken && (
-              <Text style={styles.tokenText}>
-                ID Token: {authResult.idToken.substring(0, 30)}...
-              </Text>
-            )}
-            {authResult.accessToken && (
-              <Text style={styles.tokenText}>
-                Access Token: {authResult.accessToken.substring(0, 30)}...
-              </Text>
-            )}
-            {authResult.refreshToken && (
-              <Text style={styles.tokenText}>
-                Refresh Token: {authResult.refreshToken.substring(0, 30)}...
-              </Text>
-            )}
-            {authResult.userId && (
-              <Text style={styles.userInfoText}>
-                User ID: {authResult.userId}
-              </Text>
-            )}
-            {authResult.email && (
-              <Text style={styles.userInfoText}>
-                Email: {authResult.email}
-              </Text>
-            )}
-            {authResult.name && (
-              <Text style={styles.userInfoText}>
-                Name: {authResult.name}
-              </Text>
-            )}
-          </ScrollView>
-        )}
-        
-        {authResult.error && (
-          <Text style={styles.errorText}>
-            Error: {authResult.error}
-          </Text>
-        )}
-      </View>
+        <ScrollView style={styles.tokenContainer} showsVerticalScrollIndicator={false}>
+          {/* User Information */}
+          {/* 用户信息 */}
+          {authResult.userId && (
+            <CivicCard style={styles.tokenItem}>
+              <CivicText variant="label" weight="medium" color="#374151">
+                User ID 用户ID
+              </CivicText>
+              <CivicText variant="body" color="#1F2937" style={styles.tokenValue}>
+                {authResult.userId}
+              </CivicText>
+              <CivicButton
+                title="Copy 复制"
+                onPress={() => copyToClipboard(authResult.userId!, 'User ID')}
+                variant="secondary"
+                size="small"
+                style={styles.copyButton}
+              />
+            </CivicCard>
+          )}
+
+          {authResult.email && (
+            <CivicCard style={styles.tokenItem}>
+              <CivicText variant="label" weight="medium" color="#374151">
+                Email 邮箱
+              </CivicText>
+              <CivicText variant="body" color="#1F2937" style={styles.tokenValue}>
+                {authResult.email}
+              </CivicText>
+              <CivicButton
+                title="Copy 复制"
+                onPress={() => copyToClipboard(authResult.email!, 'Email')}
+                variant="secondary"
+                size="small"
+                style={styles.copyButton}
+              />
+            </CivicCard>
+          )}
+
+          {authResult.name && (
+            <CivicCard style={styles.tokenItem}>
+              <CivicText variant="label" weight="medium" color="#374151">
+                Name 姓名
+              </CivicText>
+              <CivicText variant="body" color="#1F2937" style={styles.tokenValue}>
+                {authResult.name}
+              </CivicText>
+              <CivicButton
+                title="Copy 复制"
+                onPress={() => copyToClipboard(authResult.name!, 'Name')}
+                variant="secondary"
+                size="small"
+                style={styles.copyButton}
+              />
+            </CivicCard>
+          )}
+
+          {/* Token Information */}
+          {/* Token 信息 */}
+          {authResult.idToken && (
+            <CivicCard style={styles.tokenItem}>
+              <CivicText variant="label" weight="medium" color="#374151">
+                ID Token
+              </CivicText>
+              <CivicText variant="caption" color="#6B7280" style={styles.tokenValue}>
+                {authResult.idToken.substring(0, 50)}...
+              </CivicText>
+              <CivicButton
+                title="Copy 复制"
+                onPress={() => copyToClipboard(authResult.idToken!, 'ID Token')}
+                variant="secondary"
+                size="small"
+                style={styles.copyButton}
+              />
+            </CivicCard>
+          )}
+
+          {authResult.accessToken && (
+            <CivicCard style={styles.tokenItem}>
+              <CivicText variant="label" weight="medium" color="#374151">
+                Access Token
+              </CivicText>
+              <CivicText variant="caption" color="#6B7280" style={styles.tokenValue}>
+                {authResult.accessToken.substring(0, 50)}...
+              </CivicText>
+              <CivicButton
+                title="Copy 复制"
+                onPress={() => copyToClipboard(authResult.accessToken!, 'Access Token')}
+                variant="secondary"
+                size="small"
+                style={styles.copyButton}
+              />
+            </CivicCard>
+          )}
+
+          {authResult.refreshToken && (
+            <CivicCard style={styles.tokenItem}>
+              <CivicText variant="label" weight="medium" color="#374151">
+                Refresh Token
+              </CivicText>
+              <CivicText variant="caption" color="#6B7280" style={styles.tokenValue}>
+                {authResult.refreshToken.substring(0, 50)}...
+              </CivicText>
+              <CivicButton
+                title="Copy 复制"
+                onPress={() => copyToClipboard(authResult.refreshToken!, 'Refresh Token')}
+                variant="secondary"
+                size="small"
+                style={styles.copyButton}
+              />
+            </CivicCard>
+          )}
+        </ScrollView>
+      </CivicCard>
+    );
+  };
+
+  /**
+   * Render error display
+   * 渲染错误显示
+   */
+  const renderErrorDisplay = () => {
+    if (authState !== 'error' || !errorMessage) return null;
+
+    return (
+      <CivicCard style={styles.errorCard}>
+        <CivicText variant="h3" weight="semibold" color="#EF4444" align="center">
+          Error Details 错误详情
+        </CivicText>
+        <CivicText variant="body" color="#6B7280" style={styles.errorMessage}>
+          {errorMessage}
+        </CivicText>
+        <CivicButton
+          title="Retry Authentication 重试验证"
+          onPress={handleRetry}
+          variant="primary"
+          size="medium"
+          style={styles.retryButton}
+        />
+      </CivicCard>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       {/* 标题 */}
       <View style={styles.header}>
@@ -165,6 +386,10 @@ const DemoLoginScreen: React.FC = () => {
         </CivicText>
       </View>
 
+      {/* Authentication Status */}
+      {/* 认证状态 */}
+      {renderAuthStatus()}
+
       {/* Main content */}
       {/* 主要内容 */}
       <View style={styles.content}>
@@ -173,8 +398,8 @@ const DemoLoginScreen: React.FC = () => {
         <CivicButton
           title="Login with Civic"
           onPress={handleLoginWithCivic}
-          loading={isLoading}
-          disabled={isLoading}
+          loading={authState === 'loading'}
+          disabled={authState === 'loading'}
           variant="primary"
           size="large"
           style={styles.loginButton}
@@ -183,6 +408,10 @@ const DemoLoginScreen: React.FC = () => {
         {/* Authentication result */}
         {/* 认证结果 */}
         {renderAuthResult()}
+
+        {/* Error display */}
+        {/* 错误显示 */}
+        {renderErrorDisplay()}
       </View>
 
       {/* Footer */}
@@ -195,123 +424,114 @@ const DemoLoginScreen: React.FC = () => {
           docs.civic.com
         </CivicText>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 /**
- * Styles for the demo login screen
- * 演示登录屏幕的样式
+ * Enhanced Demo Login Screen Styles
+ * 增强演示登录屏幕样式
+ * 
+ * Professional styling with responsive design
+ * 具有响应式设计的专业样式
  */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 24,
-  },
-  header: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '600',
-    color: '#1F2937',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: '300',
-    color: '#6B7280',
-    marginBottom: 4,
-  },
-  description: {
-    fontSize: 14,
-    fontWeight: '300',
-    color: '#9CA3AF',
-    textAlign: 'center',
-  },
-  content: {
-    flex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loginButton: {
-    backgroundColor: '#2D8CFF',
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 12,
-    minWidth: 200,
-    alignItems: 'center',
-    shadowColor: '#2D8CFF',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  loginButtonDisabled: {
-    opacity: 0.6,
-  },
-  loginButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  resultContainer: {
-    marginTop: 32,
-    padding: 16,
     backgroundColor: '#F9FAFB',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+  },
+
+  header: {
+    paddingTop: 40,
+    paddingBottom: 32,
+    paddingHorizontal: 24,
     alignItems: 'center',
-    maxHeight: 200,
   },
-  resultTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1F2937',
-    marginBottom: 12,
+
+  subtitle: {
+    marginTop: 8,
   },
-  tokenContainer: {
-    width: '100%',
-    maxHeight: 120,
+
+  description: {
+    marginTop: 8,
   },
-  tokenText: {
-    fontSize: 12,
-    color: '#6B7280',
-    fontFamily: 'monospace',
-    marginBottom: 4,
-  },
-  userInfoText: {
-    fontSize: 14,
-    color: '#374151',
-    marginBottom: 4,
-  },
-  errorText: {
-    fontSize: 14,
-    color: '#EF4444',
-  },
-  footer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+
+  content: {
+    paddingHorizontal: 24,
     paddingBottom: 32,
   },
-  footerText: {
-    fontSize: 14,
-    color: '#9CA3AF',
-    fontWeight: '300',
-    marginBottom: 4,
+
+  statusCard: {
+    marginHorizontal: 24,
+    marginBottom: 24,
+    padding: 20,
   },
+
+  spinner: {
+    marginTop: 16,
+  },
+
+  retryText: {
+    marginTop: 8,
+  },
+
+  loginButton: {
+    marginBottom: 24,
+  },
+
+  resultCard: {
+    marginBottom: 24,
+    padding: 20,
+  },
+
+  resultTitle: {
+    marginBottom: 16,
+  },
+
+  tokenContainer: {
+    maxHeight: 400,
+  },
+
+  tokenItem: {
+    marginBottom: 12,
+    padding: 16,
+    backgroundColor: '#F3F4F6',
+  },
+
+  tokenValue: {
+    marginTop: 4,
+    marginBottom: 8,
+    fontFamily: 'monospace',
+  },
+
+  copyButton: {
+    alignSelf: 'flex-end',
+  },
+
+  errorCard: {
+    marginBottom: 24,
+    padding: 20,
+    backgroundColor: '#FEF2F2',
+  },
+
+  errorMessage: {
+    marginTop: 12,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+
+  retryButton: {
+    alignSelf: 'center',
+  },
+
+  footer: {
+    paddingHorizontal: 24,
+    paddingBottom: 32,
+    alignItems: 'center',
+  },
+
   docsText: {
-    fontSize: 12,
-    color: '#D1D5DB',
-    fontWeight: '300',
+    marginTop: 4,
   },
 });
 
