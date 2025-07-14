@@ -8,56 +8,42 @@
  * It demonstrates the loginWithCivic function with a clean, minimal UI following Civic's design
  * 它通过遵循 Civic 设计的简洁、极简 UI 演示 loginWithCivic 函数
  * 
+ * Based on Civic Auth official documentation: https://docs.civic.com/
+ * 基于 Civic Auth 官方文档：https://docs.civic.com/
+ * 
  * Related files: demo/App.tsx, src/CivicAuthModule.ts
  * 相关文件：demo/App.tsx, src/CivicAuthModule.ts
  */
 
-// Mock React for development (will be replaced with actual React import)
-// 开发用的模拟 React（将被实际的 React 导入替换）
-const React = {
-  createElement: (type: any, props: any, ...children: any[]) => ({ type, props, children }),
-  Fragment: 'Fragment'
-};
-
-// Mock React Native components for development
-// 开发用的模拟 React Native 组件
-const View = ({ children, style }: any) => ({ type: 'View', props: { children, style } });
-const Text = ({ children, style }: any) => ({ type: 'Text', props: { children, style } });
-const TouchableOpacity = ({ children, style, onPress, disabled }: any) => ({ type: 'TouchableOpacity', props: { children, style, onPress, disabled } });
-const ActivityIndicator = ({ color, size }: any) => ({ type: 'ActivityIndicator', props: { color, size } });
-const StyleSheet = {
-  create: (styles: any) => styles
-};
-const Alert = {
-  alert: (title: string, message: string, buttons: any[]) => console.log('Alert:', title, message)
-};
-
-// Mock useState for development
-// 开发用的模拟 useState
-const useState = (initialValue: any) => [initialValue, (value: any) => console.log('setState:', value)];
-
-// Mock loginWithCivic and AuthResult for development
-// 开发用的模拟 loginWithCivic 和 AuthResult
-const loginWithCivic = async (): Promise<AuthResult> => ({
-  success: true,
-  token: 'mock-token-for-demo',
-  userId: 'demo-user-id',
-  email: 'demo@example.com'
-});
-
-// Type declaration for React.FC
-// React.FC 类型声明
-type ReactFC = (props?: any) => any;
-
-// Mock AuthResult type
-// 模拟 AuthResult 类型
-interface AuthResult {
-  success: boolean;
-  token?: string;
-  error?: string;
-  userId?: string;
-  email?: string;
+// Temporary type declarations until React Native dependencies are installed
+// 临时类型声明，直到 React Native 依赖安装完成
+declare module 'react' {
+  export const useState: any;
+  export default any;
 }
+
+declare module 'react-native' {
+  export const View: any;
+  export const Text: any;
+  export const TouchableOpacity: any;
+  export const ActivityIndicator: any;
+  export const StyleSheet: any;
+  export const Alert: any;
+  export const ScrollView: any;
+}
+
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from 'react-native';
+import { loginWithCivic } from '../../src/CivicAuthModule';
+import { AuthResult, LoginOptions } from '../../src/types';
 
 /**
  * Demo Login Screen Component
@@ -66,7 +52,7 @@ interface AuthResult {
  * This component demonstrates the CivicAuth login functionality
  * 此组件演示 CivicAuth 登录功能
  */
-const DemoLoginScreen: ReactFC = () => {
+const DemoLoginScreen: React.FC = () => {
   // State management for authentication
   // 认证的状态管理
   const [isLoading, setIsLoading] = useState(false);
@@ -75,15 +61,28 @@ const DemoLoginScreen: ReactFC = () => {
   /**
    * Handle login with Civic
    * 处理 Civic 登录
+   * 
+   * Based on Civic Auth official documentation
+   * 基于 Civic Auth 官方文档
    */
   const handleLoginWithCivic = async () => {
     try {
       setIsLoading(true);
       setAuthResult(null);
 
+      // Configure Civic Auth options based on official documentation
+      // 根据官方文档配置 Civic Auth 选项
+      const options: LoginOptions = {
+        clientId: 'demo-client-id', // Replace with your actual client ID
+        redirectUrl: 'civic-auth-demo://callback', // Your app's redirect URL
+        nonce: 'demo-nonce-' + Date.now(), // Anti-replay protection
+        displayMode: 'popup', // Login window presentation
+        scope: 'openid profile email'
+      };
+
       // Call the loginWithCivic function
       // 调用 loginWithCivic 函数
-      const result = await loginWithCivic();
+      const result = await loginWithCivic(options);
 
       setAuthResult(result);
 
@@ -124,11 +123,42 @@ const DemoLoginScreen: ReactFC = () => {
         <Text style={styles.resultTitle}>
           {authResult.success ? 'Authenticated ✅' : 'Not authenticated ❌'}
         </Text>
-        {authResult.token && (
-          <Text style={styles.tokenText}>
-            Token: {authResult.token.substring(0, 20)}...
-          </Text>
+        
+        {authResult.success && (
+          <ScrollView style={styles.tokenContainer}>
+            {authResult.idToken && (
+              <Text style={styles.tokenText}>
+                ID Token: {authResult.idToken.substring(0, 30)}...
+              </Text>
+            )}
+            {authResult.accessToken && (
+              <Text style={styles.tokenText}>
+                Access Token: {authResult.accessToken.substring(0, 30)}...
+              </Text>
+            )}
+            {authResult.refreshToken && (
+              <Text style={styles.tokenText}>
+                Refresh Token: {authResult.refreshToken.substring(0, 30)}...
+              </Text>
+            )}
+            {authResult.userId && (
+              <Text style={styles.userInfoText}>
+                User ID: {authResult.userId}
+              </Text>
+            )}
+            {authResult.email && (
+              <Text style={styles.userInfoText}>
+                Email: {authResult.email}
+              </Text>
+            )}
+            {authResult.name && (
+              <Text style={styles.userInfoText}>
+                Name: {authResult.name}
+              </Text>
+            )}
+          </ScrollView>
         )}
+        
         {authResult.error && (
           <Text style={styles.errorText}>
             Error: {authResult.error}
@@ -145,6 +175,9 @@ const DemoLoginScreen: ReactFC = () => {
       <View style={styles.header}>
         <Text style={styles.title}>CivicAuth Demo</Text>
         <Text style={styles.subtitle}>React Native Wrapper</Text>
+        <Text style={styles.description}>
+          Based on Civic Auth official documentation
+        </Text>
       </View>
 
       {/* Main content */}
@@ -174,6 +207,9 @@ const DemoLoginScreen: ReactFC = () => {
       <View style={styles.footer}>
         <Text style={styles.footerText}>
           Powered by Civic Identity
+        </Text>
+        <Text style={styles.docsText}>
+          docs.civic.com
         </Text>
       </View>
     </View>
@@ -205,6 +241,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '300',
     color: '#6B7280',
+    marginBottom: 4,
+  },
+  description: {
+    fontSize: 14,
+    fontWeight: '300',
+    color: '#9CA3AF',
+    textAlign: 'center',
   },
   content: {
     flex: 2,
@@ -243,17 +286,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
     alignItems: 'center',
+    maxHeight: 200,
   },
   resultTitle: {
     fontSize: 16,
     fontWeight: '500',
     color: '#1F2937',
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  tokenContainer: {
+    width: '100%',
+    maxHeight: 120,
   },
   tokenText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#6B7280',
     fontFamily: 'monospace',
+    marginBottom: 4,
+  },
+  userInfoText: {
+    fontSize: 14,
+    color: '#374151',
+    marginBottom: 4,
   },
   errorText: {
     fontSize: 14,
@@ -268,6 +322,12 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: '#9CA3AF',
+    fontWeight: '300',
+    marginBottom: 4,
+  },
+  docsText: {
+    fontSize: 12,
+    color: '#D1D5DB',
     fontWeight: '300',
   },
 });

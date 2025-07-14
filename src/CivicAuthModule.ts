@@ -8,10 +8,14 @@
  * It provides the loginWithCivic function and handles WebView integration
  * 它提供 loginWithCivic 函数并处理 WebView 集成
  * 
+ * Based on Civic Auth official documentation: https://docs.civic.com/
+ * 基于 Civic Auth 官方文档：https://docs.civic.com/
+ * 
  * Related files: src/types/index.ts, src/index.ts, android/
  * 相关文件：src/types/index.ts, src/index.ts, android/
  */
 
+import { NativeModules, Platform } from 'react-native';
 import { AuthResult, LoginOptions, AuthErrorType } from './types';
 
 /**
@@ -24,33 +28,6 @@ import { AuthResult, LoginOptions, AuthErrorType } from './types';
 interface CivicAuthNativeModule {
   loginWithCivic(options?: LoginOptions): Promise<AuthResult>;
 }
-
-/**
- * Mock NativeModules for development (will be replaced with actual React Native imports)
- * 开发用的模拟 NativeModules（将被实际的 React Native 导入替换）
- */
-const NativeModules = {
-  CivicAuthModule: {
-    loginWithCivic: async (options?: LoginOptions): Promise<AuthResult> => {
-      // Mock implementation for development
-      // 开发用的模拟实现
-      return {
-        success: true,
-        token: 'mock-token-for-development',
-        userId: 'mock-user-id',
-        email: 'user@example.com'
-      };
-    }
-  }
-};
-
-/**
- * Mock Platform for development
- * 开发用的模拟 Platform
- */
-const Platform = {
-  OS: 'android' as const
-};
 
 /**
  * Get the native module for the current platform
@@ -82,6 +59,9 @@ class CivicAuth {
    * Login with Civic authentication
    * 使用 Civic 认证登录
    * 
+   * Based on Civic Auth OAuth 2.0 / OpenID Connect flow
+   * 基于 Civic Auth OAuth 2.0 / OpenID Connect 流程
+   * 
    * @param options - Login configuration options 登录配置选项
    * @returns Promise<AuthResult> - Authentication result 认证结果
    */
@@ -91,6 +71,16 @@ class CivicAuth {
       // 验证原生模块是否可用
       if (!this.nativeModule) {
         throw new Error('CivicAuth native module not found');
+      }
+
+      // Validate required parameters based on Civic Auth documentation
+      // 根据 Civic Auth 文档验证必需参数
+      if (!options?.clientId) {
+        throw new Error('clientId is required for Civic Auth');
+      }
+
+      if (!options?.redirectUrl) {
+        throw new Error('redirectUrl is required for Civic Auth');
       }
 
       // Call the native module's loginWithCivic method
@@ -122,6 +112,23 @@ class CivicAuth {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Get Civic Auth configuration info
+   * 获取 Civic Auth 配置信息
+   * 
+   * Based on official Civic Auth documentation
+   * 基于官方 Civic Auth 文档
+   */
+  getAuthInfo() {
+    return {
+      authUrl: 'https://auth.civic.com',
+      documentation: 'https://docs.civic.com/',
+      supportedTokens: ['idToken', 'accessToken', 'refreshToken'],
+      requiredParams: ['clientId', 'redirectUrl'],
+      optionalParams: ['nonce', 'iframeMode', 'displayMode']
+    };
   }
 }
 

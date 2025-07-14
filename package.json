@@ -27,12 +27,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/civic-auth-rn.git"
+    "url": "https://github.com/AlbertLei-Web3/civic-auth-rn.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/civic-auth-rn/issues"
+    "url": "https://github.com/AlbertLei-Web3/civic-auth-rn/issues"
   },
-  "homepage": "https://github.com/your-username/civic-auth-rn#readme",
+  "homepage": "https://github.com/AlbertLei-Web3/civic-auth-rn#readme",
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-native": ">=0.60.0"
