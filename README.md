@@ -124,26 +124,61 @@ const handleLogin = async () => {
 
 ## Testing 测试
 
-The package includes comprehensive tests for all functionality:
+### Running Tests 运行测试
 
-包包含所有功能的全面测试：
+```bash
+# Run all tests
+npm test
 
-```typescript
-import { runCivicAuthTests } from 'civic-auth-rn/src/test/CivicAuthTest';
+# Run tests in watch mode
+npm run test:watch
 
-// Run all tests
-const testResults = await runCivicAuthTests();
-console.log('Test Results:', testResults);
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests in CI mode
+npm run test:ci
+
+# Run performance tests
+node scripts/run-tests.js --performance
+
+# Run security tests
+node scripts/run-tests.js --security
 ```
 
 ### Test Coverage 测试覆盖
 
-- ✅ **Module Availability** - Tests native module availability
-- ✅ **Parameter Validation** - Validates required parameters
-- ✅ **URL Building** - Tests Civic Auth URL construction
-- ✅ **Token Structure** - Validates token response format
-- ✅ **Error Handling** - Tests error scenarios
-- ✅ **Configuration** - Tests auth info and settings
+The package includes comprehensive test coverage:
+
+包包含全面的测试覆盖：
+
+- ✅ **Unit Tests** - Core module functionality and parameter validation
+- ✅ **Integration Tests** - End-to-end authentication flow testing
+- ✅ **Performance Tests** - Memory management and optimization testing
+- ✅ **Security Tests** - Token validation and vulnerability assessment
+- ✅ **UI Component Tests** - Civic-style component rendering and interactions
+- ✅ **Error Handling Tests** - Comprehensive error scenario testing
+
+### Test Structure 测试结构
+
+```
+src/test/
+├── CivicAuthModule.test.ts    # Core module tests
+├── UIComponents.test.tsx      # UI component tests
+├── IntegrationTests.test.ts   # Integration tests
+└── setup.ts                  # Test configuration
+```
+
+### Test Configuration 测试配置
+
+The package includes Jest configuration with:
+
+包包含 Jest 配置：
+
+- **Coverage Thresholds** - 80% minimum coverage for all metrics
+- **Performance Monitoring** - Memory usage and execution time tracking
+- **Security Assessment** - Token validation and vulnerability scanning
+- **Mock Setup** - Comprehensive React Native module mocking
 
 ## Demo App 演示应用
 
