@@ -1,50 +1,39 @@
 /**
  * CivicAuth React Native Wrapper - Type Definitions
  * CivicAuth React Native 包装器 - 类型定义
- * 
- * This file contains all TypeScript interfaces and types for the civic-auth-rn package
- * 此文件包含 civic-auth-rn 包的所有 TypeScript 接口和类型
- * 
- * Based on Civic Auth official documentation: https://docs.civic.com/
- * 基于 Civic Auth 官方文档：https://docs.civic.com/
- * 
- * Related files: src/CivicAuthModule.ts, src/index.ts
- * 相关文件：src/CivicAuthModule.ts, src/index.ts
+ *
+ * This file defines types and interfaces for the civic-auth-rn package.
+ * 此文件为 civic-auth-rn 包定义类型和接口。
+ *
+ * Related files: src/CivicAuthModule.ts, src/components/index.ts
+ * 相关文件：src/CivicAuthModule.ts, src/components/index.ts
  */
 
 /**
- * Authentication result interface
- * 认证结果接口
- * 
- * Based on Civic Auth token structure from official documentation
- * 基于官方文档中的 Civic Auth token 结构
+ * 登录参数类型
+ * Login options type
  */
-export interface AuthResult {
-  success: boolean;
-  idToken?: string;        // OIDC id_token
-  accessToken?: string;    // OAuth 2.0 access_token
-  refreshToken?: string;   // Refresh token for re-authentication
-  error?: string;
-  userId?: string;
-  email?: string;
-  name?: string;
-  forwardedTokens?: any;   // Original provider tokens if SSO login
+export interface LoginOptions {
+  clientId: string;
+  redirectUrl: string;
+  nonce?: string;
+  displayMode?: 'popup' | 'redirect';
+  scope?: string;
 }
 
 /**
- * Login options interface
- * 登录选项接口
- * 
- * Based on Civic Auth client configuration requirements
- * 基于 Civic Auth 客户端配置要求
+ * 认证结果类型
+ * Authentication result type
  */
-export interface LoginOptions {
-  clientId: string;        // Required: Civic Dashboard project ID
-  redirectUrl: string;     // Required: OAuth callback URL
-  nonce?: string;          // Optional: Bind request/response (anti-replay)
-  iframeMode?: string;     // Optional: Control login window presentation
-  displayMode?: string;    // Optional: Display mode for login
-  scope?: string;          // Optional: Authentication scope
+export interface AuthResult {
+  success: boolean;
+  idToken?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  userId?: string;
+  email?: string;
+  name?: string;
+  error?: string;
 }
 
 /**
