@@ -12,28 +12,9 @@
  * 相关文件：demo/screens/DemoLoginScreen.tsx, src/CivicAuthModule.ts
  */
 
-// Mock React for development (will be replaced with actual React import)
-// 开发用的模拟 React（将被实际的 React 导入替换）
-const React = {
-  createElement: (type: any, props: any, ...children: any[]) => ({ type, props, children }),
-  Fragment: 'Fragment'
-};
-
-// Mock React Native components for development
-// 开发用的模拟 React Native 组件
-const SafeAreaView = ({ children, style }: any) => ({ type: 'SafeAreaView', props: { children, style } });
-const StatusBar = ({ barStyle, backgroundColor, translucent }: any) => ({ type: 'StatusBar', props: { barStyle, backgroundColor, translucent } });
-const StyleSheet = {
-  create: (styles: any) => styles
-};
-
-// Mock DemoLoginScreen for development
-// 开发用的模拟 DemoLoginScreen
-const DemoLoginScreen = () => ({ type: 'DemoLoginScreen', props: {} });
-
-// Type declaration for React.FC
-// React.FC 类型声明
-type ReactFC = (props?: any) => any;
+import React from 'react';
+import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import DemoLoginScreen from './screens/DemoLoginScreen';
 
 /**
  * Main App Component
@@ -42,7 +23,7 @@ type ReactFC = (props?: any) => any;
  * This component serves as the entry point for the demo application
  * 此组件作为演示应用的入口点
  */
-const App: ReactFC = () => {
+const App: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Status bar configuration */}

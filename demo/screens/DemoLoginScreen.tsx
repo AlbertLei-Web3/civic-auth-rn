@@ -15,23 +15,6 @@
  * 相关文件：demo/App.tsx, src/CivicAuthModule.ts
  */
 
-// Temporary type declarations until React Native dependencies are installed
-// 临时类型声明，直到 React Native 依赖安装完成
-declare module 'react' {
-  export const useState: any;
-  export default any;
-}
-
-declare module 'react-native' {
-  export const View: any;
-  export const Text: any;
-  export const TouchableOpacity: any;
-  export const ActivityIndicator: any;
-  export const StyleSheet: any;
-  export const Alert: any;
-  export const ScrollView: any;
-}
-
 import React, { useState } from 'react';
 import {
   View,

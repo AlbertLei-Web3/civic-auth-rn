@@ -26,7 +26,7 @@ import { AuthResult, LoginOptions, AuthErrorType } from './types';
  * 此接口定义了 Android 原生模块中可用的方法
  */
 interface CivicAuthNativeModule {
-  loginWithCivic(options?: LoginOptions): Promise<AuthResult>;
+  loginWithCivic(options: LoginOptions): Promise<AuthResult>;
 }
 
 /**
@@ -65,7 +65,7 @@ class CivicAuth {
    * @param options - Login configuration options 登录配置选项
    * @returns Promise<AuthResult> - Authentication result 认证结果
    */
-  async loginWithCivic(options?: LoginOptions): Promise<AuthResult> {
+  async loginWithCivic(options: LoginOptions): Promise<AuthResult> {
     try {
       // Validate that the native module is available
       // 验证原生模块是否可用
@@ -139,7 +139,7 @@ class CivicAuth {
  * @param options - Login configuration options 登录配置选项
  * @returns Promise<AuthResult> - Authentication result 认证结果
  */
-export const loginWithCivic = async (options?: LoginOptions): Promise<AuthResult> => {
+export const loginWithCivic = async (options: LoginOptions): Promise<AuthResult> => {
   const civicAuth = new CivicAuth();
   return civicAuth.loginWithCivic(options);
 };
