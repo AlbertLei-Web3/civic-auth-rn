@@ -22,4 +22,8 @@ export * from './types';
 
 // Export the login function for direct usage
 // 导出登录函数供直接使用
-export { loginWithCivic } from './CivicAuthModule'; 
+export { loginWithCivic } from './CivicAuthModule';
+
+// Export Civic UI components
+// 导出 Civic UI 组件
+export * from './components'; 

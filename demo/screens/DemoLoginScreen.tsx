@@ -18,15 +18,13 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
   StyleSheet,
   Alert,
   ScrollView,
 } from 'react-native';
 import { loginWithCivic } from '../../src/CivicAuthModule';
 import { AuthResult, LoginOptions } from '../../src/types';
+import { CivicButton, CivicCard, CivicText, CivicSpinner } from '../../src/components';
 
 /**
  * Demo Login Screen Component
@@ -156,11 +154,15 @@ const DemoLoginScreen: React.FC = () => {
       {/* Header */}
       {/* 标题 */}
       <View style={styles.header}>
-        <Text style={styles.title}>CivicAuth Demo</Text>
-        <Text style={styles.subtitle}>React Native Wrapper</Text>
-        <Text style={styles.description}>
+        <CivicText variant="h1" weight="bold" color="#1F2937" align="center">
+          CivicAuth Demo
+        </CivicText>
+        <CivicText variant="h3" weight="medium" color="#6B7280" align="center" style={styles.subtitle}>
+          React Native Wrapper
+        </CivicText>
+        <CivicText variant="body" weight="regular" color="#9CA3AF" align="center" style={styles.description}>
           Based on Civic Auth official documentation
-        </Text>
+        </CivicText>
       </View>
 
       {/* Main content */}
@@ -168,17 +170,15 @@ const DemoLoginScreen: React.FC = () => {
       <View style={styles.content}>
         {/* Login button */}
         {/* 登录按钮 */}
-        <TouchableOpacity
-          style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
+        <CivicButton
+          title="Login with Civic"
           onPress={handleLoginWithCivic}
+          loading={isLoading}
           disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#FFFFFF" size="small" />
-          ) : (
-            <Text style={styles.loginButtonText}>Login with Civic</Text>
-          )}
-        </TouchableOpacity>
+          variant="primary"
+          size="large"
+          style={styles.loginButton}
+        />
 
         {/* Authentication result */}
         {/* 认证结果 */}
@@ -188,12 +188,12 @@ const DemoLoginScreen: React.FC = () => {
       {/* Footer */}
       {/* 页脚 */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>
+        <CivicText variant="caption" weight="medium" color="#6B7280" align="center">
           Powered by Civic Identity
-        </Text>
-        <Text style={styles.docsText}>
+        </CivicText>
+        <CivicText variant="caption" weight="regular" color="#9CA3AF" align="center" style={styles.docsText}>
           docs.civic.com
-        </Text>
+        </CivicText>
       </View>
     </View>
   );

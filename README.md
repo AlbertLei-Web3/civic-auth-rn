@@ -16,6 +16,7 @@ CivicAuth React Native Wrapper 是 Civic 身份认证系统的 React Native 包�
 - 🎯 **Demo App** - Complete working example included
 - ✅ **Official Documentation Integration** - Based on Civic Auth official docs
 - 🧪 **Comprehensive Testing** - Full test suite included
+- 🎨 **Professional UI Components** - Civic-style buttons, cards, text, and spinners
 
 ## 功能特性 (Features)
 
@@ -27,6 +28,7 @@ CivicAuth React Native Wrapper 是 Civic 身份认证系统的 React Native 包�
 - 🎯 **演示应用** - 包含完整的工作示例
 - ✅ **官方文档集成** - 基于 Civic Auth 官方文档
 - 🧪 **全面测试** - 包含完整测试套件
+- 🎨 **专业 UI 组件** - Civic 风格按钮、卡片、文本和旋转器
 
 ## Installation 安装
 
@@ -161,6 +163,66 @@ npm install
 
 # Run the demo app
 npm run demo:android
+```
+
+## UI Components UI 组件
+
+The package includes professional UI components following Civic's design guidelines:
+
+包包含遵循 Civic 设计指南的专业 UI 组件：
+
+### CivicButton
+Professional button component with Civic Blue (#2D8CFF) styling:
+专业的按钮组件，使用 Civic Blue (#2D8CFF) 样式：
+
+```typescript
+import { CivicButton } from 'civic-auth-rn';
+
+<CivicButton
+  title="Login with Civic"
+  onPress={handleLogin}
+  loading={isLoading}
+  variant="primary"
+  size="large"
+/>
+```
+
+### CivicSpinner
+Smooth loading spinner with animations:
+具有流畅动画效果的加载旋转器：
+
+```typescript
+import { CivicSpinner } from 'civic-auth-rn';
+
+<CivicSpinner
+  size="medium"
+  color="#2D8CFF"
+  text="Loading..."
+/>
+```
+
+### CivicCard
+Card container with rounded corners and shadows:
+具有圆角和阴影效果的卡片容器：
+
+```typescript
+import { CivicCard } from 'civic-auth-rn';
+
+<CivicCard padding={16} elevation={2}>
+  <Text>Card content</Text>
+</CivicCard>
+```
+
+### CivicText
+Text component with Inter font family:
+使用 Inter 字体族的文本组件：
+
+```typescript
+import { CivicText } from 'civic-auth-rn';
+
+<CivicText variant="h1" weight="bold" color="#1F2937">
+  Heading
+</CivicText>
 ```
 
 ## API Reference API 参考
