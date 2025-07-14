@@ -159,3 +159,8 @@ public/temp/
 # Lock文件（根据包管理器选择保留一个）/ Lock files
 # package-lock.json  # 如果使用yarn，取消注释这行
 # yarn.lock         # 如果使用npm，取消注释这行 
+
+# Ignore Gradle build cache and lock files for Android
+# English: Prevents .gradle build cache and lock files from being tracked by git
+# 中文：防止 .gradle 构建缓存和锁文件被 git 跟踪
+android/.gradle/ 

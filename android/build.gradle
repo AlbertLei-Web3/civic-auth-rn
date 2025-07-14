@@ -43,12 +43,14 @@ buildscript {
 // 中文：这些镜像会加快在中国的依赖下载速度。
 allprojects {
     repositories {
-        // Google Maven 镜像
+        // Aliyun Google Maven 镜像
         maven { url 'https://maven.aliyun.com/repository/google' }
-        // Maven Central 镜像
+        // Aliyun Maven Central 镜像
         maven { url 'https://maven.aliyun.com/repository/central' }
-        // JCenter 镜像（可选）
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        // Aliyun Public 镜像
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        // Aliyun Gradle Plugin 镜像
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         // 官方仓库
         google()
         mavenCentral()

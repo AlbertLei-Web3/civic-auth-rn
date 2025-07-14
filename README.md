@@ -378,3 +378,16 @@ For support, email support@civic.com or join our Slack channel.
 ## 支持 (Support)
 
 如需支持，请发送邮件至 support@civic.com 或加入我们的 Slack 频道。 
+
+## Android App Module Structure (android/app)
+
+English:
+The `android/app` directory is the standard Android application module required for React Native projects. It contains the `AndroidManifest.xml` (which defines the app's package name and entry points) and `build.gradle` (which configures how the app is built). These files are essential for building and running the demo app on Android devices or emulators.
+
+中文：
+`android/app` 目录是 React Native 项目所需的标准 Android 应用模块。它包含 `AndroidManifest.xml`（定义应用包名和入口）和 `build.gradle`（配置应用构建方式）。这些文件对于在 Android 设备或模拟器上构建和运行演示应用至关重要。
+
+- `android/app/src/main/AndroidManifest.xml`: App configuration and entry point. 应用配置和入口。
+- `android/app/build.gradle`: Build settings and dependencies. 构建设置和依赖。
+
+If you encounter errors about missing package names or manifest files, ensure this structure exists. 如果遇到缺少包名或清单文件的错误，请确保此结构存在。 
