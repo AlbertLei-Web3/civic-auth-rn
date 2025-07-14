@@ -1,0 +1,33 @@
+//
+// android/app/build.gradle
+// -----------------------
+// English: This file configures how the app module is built, including its dependencies, SDK versions, and applicationId (package name). It is required for every Android app module and works with AndroidManifest.xml and your source code.
+// 中文：此文件配置 app 模块的构建方式，包括依赖、SDK 版本和 applicationId（包名）。每个 Android app 模块都需要此文件，它与 AndroidManifest.xml 和源码配合使用。
+//
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 34 // English: The Android SDK version to compile against. 中文：编译时使用的 Android SDK 版本。
+
+    defaultConfig {
+        applicationId "com.civicauth" // English: The unique package name for your app. 中文：应用的唯一包名。
+        minSdkVersion 23 // English: Minimum Android version supported. 中文：支持的最低 Android 版本。
+        targetSdkVersion 34 // English: Target Android version. 中文：目标 Android 版本。
+        versionCode 1 // English: App version code. 中文：应用版本号。
+        versionName "1.0" // English: App version name. 中文：应用版本名。
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false // English: Disable code shrinking for release. 中文：发布版不启用代码压缩。
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar']) // English: Include all JARs in libs/. 中文：包含 libs/ 目录下所有 JAR。
+    implementation 'androidx.appcompat:appcompat:1.6.1' // English: AndroidX AppCompat library. 中文：AndroidX 兼容库。
+    implementation 'com.facebook.react:react-native:+' // English: React Native framework. 中文：React Native 框架。
+} 

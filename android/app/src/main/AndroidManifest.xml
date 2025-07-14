@@ -1,0 +1,33 @@
+<!--
+  AndroidManifest.xml
+  -------------------
+  English: This file defines essential information about your Android app, such as its package name, components, permissions, and more. It is required for every Android application and is read by the Android system at install time. This file is closely related to build.gradle and your Java/Kotlin source files.
+  中文：此文件定义了您的 Android 应用的基本信息，如包名、组件、权限等。每个 Android 应用都必须有此文件，Android 系统在安装时会读取它。此文件与 build.gradle 及 Java/Kotlin 源码文件密切相关。
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.civicauth">
+
+    <!--
+      English: The application tag contains settings for the entire app, such as the icon, label, and main activity.
+      中文：application 标签包含整个应用的设置，如图标、名称和主 Activity。
+    -->
+    <application
+        android:allowBackup="true"
+        android:label="CivicAuthDemo"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <!--
+          English: The main activity is the entry point of your app.
+          中文：main activity 是应用的入口。
+        -->
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest> 
