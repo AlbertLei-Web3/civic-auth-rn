@@ -1,55 +1,109 @@
 /**
- * CivicAuth React Native Wrapper - Demo Application
- * CivicAuth React Native 包装器 - 演示应用
- * 
- * This file contains the main demo app that showcases the CivicAuth functionality
- * 此文件包含展示 CivicAuth 功能的主要演示应用
- * 
- * It demonstrates the loginWithCivic function with a clean, minimal UI
- * 它通过简洁、极简的 UI 演示 loginWithCivic 函数
- * 
- * Related files: demo/screens/DemoLoginScreen.tsx, src/CivicAuthModule.ts
- * 相关文件：demo/screens/DemoLoginScreen.tsx, src/CivicAuthModule.ts
+ * CivicAuth React Native Demo App
+ * CivicAuth React Native 演示应用
+ *
+ * 这是一个简洁的演示应用，展示如何使用 CivicAuth React Native 包装器
+ * This is a clean demo app showing how to use the CivicAuth React Native wrapper
  */
 
-import React from 'react';
-import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
-import DemoLoginScreen from './screens/DemoLoginScreen';
+import React, { useState } from 'react';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  SafeAreaView, 
+  StatusBar,
+  Alert 
+} from 'react-native';
+import { CivicAuthProvider } from 'civic-auth-rn';
+import LoginScreen from './screens/LoginScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
-/**
- * Main App Component
- * 主应用组件
- * 
- * This component serves as the entry point for the demo application
- * 此组件作为演示应用的入口点
- */
-const App: React.FC = () => {
+export default function App() {
+  const [currentScreen, setCurrentScreen] = useState<'login' | 'profile'>('login');
+
+  const handleLoginSuccess = () => {
+    setCurrentScreen('profile');
+  };
+
+  const handleLogout = () => {
+    setCurrentScreen('login');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Status bar configuration */}
-      {/* 状态栏配置 */}
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="#FFFFFF"
-        translucent={false}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor="#f8f9fa" />
       
-      {/* Main demo screen */}
-      {/* 主要演示屏幕 */}
-      <DemoLoginScreen />
+      <CivicAuthProvider
+        clientId="demo-client-id"
+        redirectUrl="civicauthdemo://callback"
+        displayMode="redirect"
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>🔐 CivicAuth Demo</Text>
+          <Text style={styles.subtitle}>React Native Wrapper</Text>
+        </View>
+
+        <View style={styles.content}>
+          {currentScreen === 'login' ? (
+            <LoginScreen onLoginSuccess={handleLoginSuccess} />
+          ) : (
+            <ProfileScreen onLogout={handleLogout} />
+          )}
+        </View>
+
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>
+            基于 @civic/auth 的 React Native 包装器
+          </Text>
+          <Text style={styles.footerText}>
+            Powered by Civic Auth React Native Wrapper
+          </Text>
+        </View>
+      </CivicAuthProvider>
     </SafeAreaView>
   );
-};
+}
 
-/**
- * Styles for the main app container
- * 主应用容器的样式
- */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f8f9fa',
   },
-});
-
-export default App; 
+  header: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e9ecef',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2D8CFF',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6c757d',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  footer: {
+    alignItems: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#e9ecef',
+  },
+  footerText: {
+    fontSize: 12,
+    color: '#6c757d',
+    textAlign: 'center',
+  },
+}); 

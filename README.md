@@ -1,502 +1,278 @@
 # CivicAuth React Native Wrapper
 
-A React Native wrapper for Civic's identity authentication system, allowing developers to easily integrate Civic Auth login into their mobile apps.
+[![npm version](https://badge.fury.io/js/civic-auth-rn.svg)](https://badge.fury.io/js/civic-auth-rn)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 项目简介 (Project Description)
+> 🔐 **CivicAuth React Native 包装器** - 基于 `@civic/auth` 的 React Native 身份验证解决方案
+> 
+> **CivicAuth React Native Wrapper** - React Native authentication solution based on `@civic/auth`
 
-CivicAuth React Native Wrapper 是 Civic 身份认证系统的 React Native 包装器，允许开发者轻松地将 Civic Auth 登录集成到他们的移动应用中。
+## 📋 项目概述 Project Overview
 
-## Features 功能特性
+这是一个为 [Superteam Earn](https://earn.superteam.fun/listing/civicauth4reactnative/) 开发的 React Native 包装器，将 Civic Auth 的 Web SDK 适配到 React Native 环境中。
 
-- 🔐 **Secure Authentication** - WebView-based Civic authentication flow
-- 🎨 **Civic Design Compliance** - Follows Civic's official design guidelines
-- 📱 **Android Support** - Native Android module implementation
-- 🛡️ **Security First** - No direct wallet access, token extraction only
-- 📦 **Easy Integration** - Simple `loginWithCivic()` function
-- 🎯 **Demo App** - Complete working example included
-- ✅ **Official Documentation Integration** - Based on Civic Auth official docs
-- 🧪 **Comprehensive Testing** - Full test suite included
-- 🎨 **Professional UI Components** - Civic-style buttons, cards, text, and spinners
+This is a React Native wrapper developed for [Superteam Earn](https://earn.superteam.fun/listing/civicauth4reactnative/) that adapts Civic Auth's Web SDK to React Native environment.
 
-## 功能特性 (Features)
+### ✨ 核心特性 Key Features
 
-- 🔐 **安全认证** - 基于 WebView 的 Civic 认证流程
-- 🎨 **Civic 设计规范** - 遵循 Civic 官方设计指南
-- 📱 **Android 支持** - 原生 Android 模块实现
-- 🛡️ **安全优先** - 无直接钱包访问，仅提取令牌
-- 📦 **易于集成** - 简单的 `loginWithCivic()` 函数
-- 🎯 **演示应用** - 包含完整的工作示例
-- ✅ **官方文档集成** - 基于 Civic Auth 官方文档
-- 🧪 **全面测试** - 包含完整测试套件
-- 🎨 **专业 UI 组件** - Civic 风格按钮、卡片、文本和旋转器
+- 🔗 **基于官方 SDK** - 基于 `@civic/auth` Web SDK 构建
+- 🎯 **React Native 优化** - 专门为 React Native 环境优化
+- 🔒 **OAuth 2.0 / OpenID Connect** - 支持标准认证协议
+- 📱 **深度链接支持** - 完整的深度链接回调处理
+- 🎨 **TypeScript 支持** - 完整的 TypeScript 类型定义
+- 🚀 **简洁 API** - 提供 `CivicAuthProvider` 和 `useUser()` 钩子
 
-## Installation 安装
+### 🏗️ 架构设计 Architecture
+
+```
+CivicAuth React Native Wrapper
+├── CivicAuthProvider (React Context)
+├── useUser() Hook
+├── OAuth 2.0 Flow Handler
+├── Deep Link Processing
+└── TypeScript Types
+```
+
+## 🚀 快速开始 Quick Start
+
+### 安装 Installation
 
 ```bash
 npm install civic-auth-rn
+# 或者 or
+yarn add civic-auth-rn
 ```
 
-### Android Setup Android 设置
+### 基本使用 Basic Usage
 
-#### Prerequisites 前置条件
+```tsx
+import React from 'react';
+import { CivicAuthProvider, useUser } from 'civic-auth-rn';
 
-Make sure you have the following installed:
-确保您已安装以下内容：
+function App() {
+  return (
+    <CivicAuthProvider
+      clientId="your-civic-client-id"
+      redirectUrl="yourapp://callback"
+      displayMode="redirect"
+    >
+      <AuthScreen />
+    </CivicAuthProvider>
+  );
+}
 
-- **Java Development Kit (JDK)** - Version 11 or higher
-- **Android Studio** - Latest version with Android SDK
-- **Android SDK** - API level 23 or higher
-- **Gradle** - Version 8.14.3 (recommended for this project)
+function AuthScreen() {
+  const { user, isLoading, login, logout, isAuthenticated } = useUser();
 
-#### Project Configuration 项目配置
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
-Add the following to your `android/settings.gradle`:
+  if (isAuthenticated) {
+    return (
+      <View>
+        <Text>Welcome, {user?.profile?.name}!</Text>
+        <Button title="Logout" onPress={logout} />
+      </View>
+    );
+  }
 
-```gradle
-include ':civic-auth-rn'
-project(':civic-auth-rn').projectDir = new File(rootProject.projectDir, '../node_modules/civic-auth-rn/android')
-```
-
-Add the following to your `android/app/build.gradle`:
-
-```gradle
-dependencies {
-    implementation project(':civic-auth-rn')
+  return (
+    <View>
+      <Button title="Login with Civic" onPress={login} />
+    </View>
+  );
 }
 ```
 
-Add the following to your `MainApplication.java`:
+## 📚 API 文档 API Documentation
 
-```java
-import com.civicauth.CivicAuthPackage;
+### CivicAuthProvider
 
-@Override
-protected List<ReactPackage> getPackages() {
-    List<ReactPackage> packages = new PackageList(this).getPackages();
-    packages.add(new CivicAuthPackage());
-    return packages;
+主要的 Context Provider，包裹你的应用以提供认证功能。
+
+Main Context Provider that wraps your app to provide authentication functionality.
+
+#### Props
+
+| 属性 Property | 类型 Type | 必填 Required | 默认值 Default | 说明 Description |
+|---------------|-----------|---------------|----------------|------------------|
+| `clientId` | `string` | ✅ | - | Civic 客户端 ID |
+| `redirectUrl` | `string` | ❌ | `https://civic.com/auth/callback` | 认证回调 URL |
+| `displayMode` | `'iframe' \| 'redirect' \| 'new_tab'` | ❌ | `'redirect'` | 认证显示模式 |
+| `iframeMode` | `'embedded'` | ❌ | - | iframe 模式配置 |
+
+### useUser Hook
+
+用于访问用户认证状态和方法的 React Hook。
+
+React Hook for accessing user authentication state and methods.
+
+#### 返回值 Return Value
+
+```typescript
+interface CivicAuthContextType {
+  user: CivicUser | null;           // 当前用户信息
+  isLoading: boolean;               // 加载状态
+  login: () => Promise<void>;       // 登录方法
+  logout: () => void;               // 登出方法
+  isAuthenticated: boolean;         // 认证状态
 }
 ```
 
-#### Gradle Wrapper Configuration Gradle 包装器配置
-
-The project uses a local Gradle installation to avoid slow downloads:
-项目使用本地 Gradle 安装以避免下载缓慢：
-
-```properties
-# android/gradle/wrapper/gradle-wrapper.properties
-distributionUrl=file\:///D:/Gradle/gradle-8.14.3-all.zip
-```
-
-#### Chinese Mirror Configuration 中国镜像配置
-
-For faster dependency downloads in China, the project is configured with Aliyun mirrors:
-为了在中国加快依赖下载速度，项目配置了阿里云镜像：
-
-```properties
-# android/gradle.properties
-systemProp.http.proxyHost=mirrors.aliyun.com
-systemProp.https.proxyHost=mirrors.aliyun.com
-systemProp.maven.repo.remote=https://maven.aliyun.com/repository/public
-```
-
-#### Running Gradle Commands 运行 Gradle 命令
-
-On Windows, use the gradlew.bat script:
-在 Windows 上，使用 gradlew.bat 脚本：
-
-```bash
-# Clean and build
-android\gradlew.bat clean
-android\gradlew.bat build
-
-# Run the app
-android\gradlew.bat installDebug
-```
-
-On Unix-like systems, use the gradlew script:
-在类 Unix 系统上，使用 gradlew 脚本：
-
-```bash
-# Make executable (first time only)
-chmod +x android/gradlew
-
-# Clean and build
-./android/gradlew clean
-./android/gradlew build
-
-# Run the app
-./android/gradlew installDebug
-```
-
-## Usage 使用方法
-
-### Basic Usage 基本用法
+### CivicUser 类型 Type
 
 ```typescript
-import { loginWithCivic } from 'civic-auth-rn';
-
-const handleLogin = async () => {
-  try {
-    const result = await loginWithCivic({
-      clientId: 'your-client-id',
-      redirectUrl: 'your-app://callback'
-    });
-    
-    if (result.success) {
-      console.log('Authentication successful:', result.idToken);
-      console.log('User ID:', result.userId);
-      console.log('Email:', result.email);
-    } else {
-      console.error('Authentication failed:', result.error);
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-  }
-};
+interface CivicUser {
+  accessToken: string;
+  idToken: string;
+  refreshToken?: string;
+  forwardedTokens?: Record<string, string>;
+  profile?: {
+    sub: string;
+    email?: string;
+    name?: string;
+    [key: string]: any;
+  };
+}
 ```
 
-### Advanced Usage 高级用法
+## 🎯 演示应用 Demo Application
 
-```typescript
-import CivicAuth from 'civic-auth-rn';
+项目包含一个完整的演示应用，展示如何使用 CivicAuth React Native 包装器。
 
-const civicAuth = new CivicAuth();
+The project includes a complete demo application showing how to use the CivicAuth React Native wrapper.
 
-const handleLogin = async () => {
-  try {
-    const result = await civicAuth.loginWithCivic({
-      clientId: 'your-client-id',
-      redirectUrl: 'your-app://callback',
-      nonce: 'anti-replay-protection',
-      displayMode: 'popup',
-      scope: 'openid profile email'
-    });
-    
-    if (result.success) {
-      console.log('User authenticated:', result.userId);
-      console.log('ID Token:', result.idToken);
-      console.log('Access Token:', result.accessToken);
-      console.log('Refresh Token:', result.refreshToken);
-    }
-  } catch (error) {
-    console.error('Authentication error:', error);
-  }
-};
-```
-
-## Testing 测试
-
-### Running Tests 运行测试
+### 运行演示 Running the Demo
 
 ```bash
-# Run all tests
-npm test
+# 进入演示目录
+cd demo
 
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run tests in CI mode
-npm run test:ci
-
-# Run performance tests
-node scripts/run-tests.js --performance
-
-# Run security tests
-node scripts/run-tests.js --security
-```
-
-### Test Coverage 测试覆盖
-
-The package includes comprehensive test coverage:
-
-包包含全面的测试覆盖：
-
-- ✅ **Unit Tests** - Core module functionality and parameter validation
-- ✅ **Integration Tests** - End-to-end authentication flow testing
-- ✅ **Performance Tests** - Memory management and optimization testing
-- ✅ **Security Tests** - Token validation and vulnerability assessment
-- ✅ **UI Component Tests** - Civic-style component rendering and interactions
-- ✅ **Error Handling Tests** - Comprehensive error scenario testing
-
-### Test Structure 测试结构
-
-```
-src/test/
-├── CivicAuthModule.test.ts    # Core module tests
-├── UIComponents.test.tsx      # UI component tests
-├── IntegrationTests.test.ts   # Integration tests
-└── setup.ts                  # Test configuration
-```
-
-### Test Configuration 测试配置
-
-The package includes Jest configuration with:
-
-包包含 Jest 配置：
-
-- **Coverage Thresholds** - 80% minimum coverage for all metrics
-- **Performance Monitoring** - Memory usage and execution time tracking
-- **Security Assessment** - Token validation and vulnerability scanning
-- **Mock Setup** - Comprehensive React Native module mocking
-
-## Demo App 演示应用
-
-The package includes a comprehensive demo app showcasing all CivicAuth functionality with professional UI/UX.
-
-包包含一个综合演示应用，展示所有 CivicAuth 功能，具有专业的 UI/UX。
-
-### Features 功能特性
-
-- ✅ **Real-time Status Updates** - Live authentication status display
-- ✅ **Professional Error Handling** - Comprehensive error categorization and user-friendly messages
-- ✅ **Token Management** - Secure token display with copy functionality
-- ✅ **Retry Mechanism** - Automatic retry for failed authentication attempts
-- ✅ **Configuration Validation** - Built-in validation for authentication parameters
-- ✅ **Professional UI Components** - Uses all Civic UI components for consistent design
-
-### 功能特性 (Features)
-
-- ✅ **实时状态更新** - 实时认证状态显示
-- ✅ **专业错误处理** - 综合错误分类和用户友好消息
-- ✅ **Token 管理** - 安全的 token 显示和复制功能
-- ✅ **重试机制** - 失败认证尝试的自动重试
-- ✅ **配置验证** - 认证参数的内置验证
-- ✅ **专业 UI 组件** - 使用所有 Civic UI 组件实现一致设计
-
-### Running the Demo 运行演示
-
-```bash
-# Clone the repository
-git clone https://github.com/AlbertLei-Web3/civic-auth-rn.git
-cd civic-auth-rn
-
-# Install dependencies
+# 安装依赖
 npm install
 
-# Run the demo app
-npm run demo:android
+# 启动演示应用
+npm start
 ```
 
-### Demo App Structure 演示应用结构
+### 演示功能 Demo Features
 
-```
-demo/
-├── App.tsx                    # Main app entry point
-├── screens/
-│   └── DemoLoginScreen.tsx    # Enhanced demo login screen
-└── utils/
-    ├── errorHandlers.ts       # Comprehensive error handling
-    └── authHelpers.ts         # Authentication utilities
-```
+- 🔐 **登录界面** - 展示 Civic Auth 登录流程
+- 👤 **用户资料** - 显示认证后的用户信息
+- 🔑 **令牌管理** - 展示访问令牌和刷新令牌
+- 🎭 **演示模式** - 模拟认证流程用于测试
 
-## UI Components UI 组件
+## 🔧 配置 Configuration
 
-The package includes professional UI components following Civic's design guidelines:
+### 深度链接配置 Deep Link Configuration
 
-包包含遵循 Civic 设计指南的专业 UI 组件：
+为了处理认证回调，需要配置深度链接：
 
-### CivicButton
-Professional button component with Civic Blue (#2D8CFF) styling:
-专业的按钮组件，使用 Civic Blue (#2D8CFF) 样式：
+To handle authentication callbacks, you need to configure deep links:
 
-```typescript
-import { CivicButton } from 'civic-auth-rn';
+#### Android (android/app/src/main/AndroidManifest.xml)
 
-<CivicButton
-  title="Login with Civic"
-  onPress={handleLogin}
-  loading={isLoading}
-  variant="primary"
-  size="large"
-/>
+```xml
+<activity
+  android:name=".MainActivity"
+  android:exported="true"
+  android:launchMode="singleTask">
+  <intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="yourapp" />
+  </intent-filter>
+</activity>
 ```
 
-### CivicSpinner
-Smooth loading spinner with animations:
-具有流畅动画效果的加载旋转器：
+#### iOS (ios/YourApp/Info.plist)
 
-```typescript
-import { CivicSpinner } from 'civic-auth-rn';
-
-<CivicSpinner
-  size="medium"
-  color="#2D8CFF"
-  text="Loading..."
-/>
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLName</key>
+    <string>yourapp</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>yourapp</string>
+    </array>
+  </dict>
+</array>
 ```
 
-### CivicCard
-Card container with rounded corners and shadows:
-具有圆角和阴影效果的卡片容器：
+## 🔒 安全考虑 Security Considerations
 
-```typescript
-import { CivicCard } from 'civic-auth-rn';
+- 🔐 **客户端 ID** - 确保使用正确的 Civic 客户端 ID
+- 🔄 **令牌交换** - 授权码到令牌的交换应在后端进行
+- 🔗 **深度链接** - 验证深度链接的来源和参数
+- 💾 **令牌存储** - 安全地存储访问令牌和刷新令牌
 
-<CivicCard padding={16} elevation={2}>
-  <Text>Card content</Text>
-</CivicCard>
+## 📖 官方文档 Official Documentation
+
+- 📘 **Civic Auth 文档**: [https://docs.civic.com](https://docs.civic.com)
+- 📘 **React SDK**: [https://docs.civic.com/docs/react](https://docs.civic.com/docs/react)
+- 📘 **NPM 包**: [https://www.npmjs.com/package/@civic/auth](https://www.npmjs.com/package/@civic/auth)
+
+## 🧪 测试 Testing
+
+```bash
+# 运行测试
+npm test
+
+# 运行测试并生成覆盖率报告
+npm run test:coverage
+
+# 运行类型检查
+npm run type-check
 ```
 
-### CivicText
-Text component with Inter font family:
-使用 Inter 字体族的文本组件：
+## 📦 构建 Building
 
-```typescript
-import { CivicText } from 'civic-auth-rn';
+```bash
+# 构建 TypeScript
+npm run build
 
-<CivicText variant="h1" weight="bold" color="#1F2937">
-  Heading
-</CivicText>
+# 检查代码风格
+npm run lint
 ```
 
-## API Reference API 参考
+## 🤝 贡献 Contributing
 
-### `loginWithCivic(options)`
+欢迎贡献！请阅读我们的贡献指南。
 
-Authenticates a user with Civic's identity system.
+Contributions are welcome! Please read our contributing guidelines.
 
-使用 Civic 身份系统认证用户。
-
-#### Parameters 参数
-
-- `options.clientId` (required) - Civic Dashboard project ID
-- `options.redirectUrl` (required) - OAuth callback URL
-- `options.nonce` (optional) - Anti-replay protection
-- `options.displayMode` (optional) - Login window presentation
-- `options.scope` (optional) - Authentication scope
-
-#### Returns 返回值
-
-```typescript
-interface AuthResult {
-  success: boolean;
-  idToken?: string;        // OIDC id_token
-  accessToken?: string;    // OAuth 2.0 access_token
-  refreshToken?: string;   // Refresh token for re-authentication
-  userId?: string;         // User identifier
-  email?: string;          // User email
-  name?: string;           // User name
-  error?: string;          // Error message if failed
-}
-```
-
-## Security Considerations 安全考虑
-
-- No direct wallet access or private key handling
-- Token extraction only from redirect URLs
-- Secure WebView implementation with proper isolation
-- No storage of sensitive data in the module
-- Based on Civic Auth official security guidelines
-
-## 安全考虑 (Security Considerations)
-
-- 无直接钱包访问或私钥处理
-- 仅从重定向 URL 提取令牌
-- 具有适当隔离的安全 WebView 实现
-- 模块中不存储敏感数据
-- 基于 Civic Auth 官方安全指南
-
-## Official Documentation 官方文档
-
-This implementation is based on Civic Auth official documentation:
-
-此实现基于 Civic Auth 官方文档：
-
-- **Civic Auth Documentation**: https://docs.civic.com/
-- **React Integration Guide**: https://docs.civic.com/integration/react
-- **API Reference**: https://docs-sip.civic.com/
-
-## Contributing 贡献
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 贡献 (Contributing)
-
-1. Fork 仓库
-2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'Add some amazing feature'`)
+1. Fork 这个仓库
+2. 创建你的特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交你的更改 (`git commit -m 'Add some amazing feature'`)
 4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 打开 Pull Request
+5. 开启一个 Pull Request
 
-## License 许可证
+## 📄 许可证 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
-此项目基于 MIT 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件。
+## 🙏 致谢 Acknowledgments
 
-## Support 支持
+- 感谢 [Civic](https://civic.com) 提供强大的身份验证平台
+- 感谢 [Superteam](https://superteam.fun) 提供开发机会
+- 基于 `@civic/auth` 官方 SDK 构建
 
-For support, email support@civic.com or join our Slack channel.
+## 📞 支持 Support
 
-如需支持，请发送邮件至 support@civic.com 或加入我们的 Slack 频道。
+如果你有任何问题或需要帮助，请：
 
-## 支持 (Support)
+If you have any questions or need help, please:
 
-如需支持，请发送邮件至 support@civic.com 或加入我们的 Slack 频道。 
+- 📧 发送邮件到：support@civicauth-rn.com
+- 🐛 提交 Issue：[GitHub Issues](https://github.com/AlbertLei-Web3/civic-auth-rn/issues)
+- 📖 查看文档：[项目文档](https://github.com/AlbertLei-Web3/civic-auth-rn#readme)
 
-## Android App Module Structure (android/app)
+---
 
-English:
-The `android/app` directory is the standard Android application module required for React Native projects. It contains the `AndroidManifest.xml` (which defines the app's package name and entry points) and `build.gradle` (which configures how the app is built). These files are essential for building and running the demo app on Android devices or emulators.
+**Made with ❤️ for the React Native community**
 
-中文：
-`android/app` 目录是 React Native 项目所需的标准 Android 应用模块。它包含 `AndroidManifest.xml`（定义应用包名和入口）和 `build.gradle`（配置应用构建方式）。这些文件对于在 Android 设备或模拟器上构建和运行演示应用至关重要。
-
-- `android/app/src/main/AndroidManifest.xml`: App configuration and entry point. 应用配置和入口。
-- `android/app/build.gradle`: Build settings and dependencies. 构建设置和依赖。
-
-If you encounter errors about missing package names or manifest files, ensure this structure exists. 如果遇到缺少包名或清单文件的错误，请确保此结构存在。
-
-## Project Completion Status 项目完成状态
-
-**English:** This CivicAuth React Native project has been successfully completed and is ready for Superteam bounty submission.
-
-**中文：** 此 CivicAuth React Native 项目已成功完成，准备提交 Superteam 赏金。
-
-### ✅ Completed Features 已完成功能
-
-- **Core Authentication Module** - Full CivicAuth integration with WebView-based authentication
-- **Android Native Module** - Complete Kotlin implementation with React Native bridge
-- **Professional UI Components** - CivicButton, CivicCard, CivicText, CivicSpinner with Civic Blue styling
-- **Demo Application** - Comprehensive demo app showcasing all functionality
-- **TypeScript Support** - Full type definitions and successful compilation
-- **Build System** - Working Android build configuration
-- **Documentation** - Complete bilingual documentation (English/Chinese)
-- **Test Framework** - Comprehensive test suite setup
-
-### 核心功能 Core Functionality
-
-- **核心认证模块** - 完整的 CivicAuth 集成，基于 WebView 的认证
-- **Android 原生模块** - 完整的 Kotlin 实现，带有 React Native 桥接
-- **专业 UI 组件** - CivicButton、CivicCard、CivicText、CivicSpinner，使用 Civic Blue 样式
-- **演示应用** - 展示所有功能的综合演示应用
-- **TypeScript 支持** - 完整的类型定义和成功编译
-- **构建系统** - 工作的 Android 构建配置
-- **文档** - 完整的双语文档（英文/中文）
-- **测试框架** - 综合测试套件设置
-
-### 🎯 Ready for Production 准备投入生产
-
-The project is now complete and ready for:
-项目现已完成，准备用于：
-
-- **Superteam Bounty Submission** - All requirements met
-- **NPM Package Publication** - Ready for npm publish
-- **Production Integration** - Can be integrated into real applications
-- **Community Use** - Open source and documented for community adoption
-
-### 📊 Technical Achievements 技术成就
-
-- **100% TypeScript Compilation** - No compilation errors
-- **Professional UI/UX** - Follows Civic's official design guidelines
-- **Comprehensive Documentation** - Bilingual documentation with examples
-- **Industrial Standards** - Professional code structure and comments
-- **Cross-Platform Ready** - Android implementation complete 
+**为 React Native 社区用心打造** 
