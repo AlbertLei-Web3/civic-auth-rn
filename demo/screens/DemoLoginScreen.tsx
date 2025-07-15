@@ -381,7 +381,7 @@ const DemoLoginScreen: React.FC = () => {
         <CivicText variant="h3" weight="medium" color="#6B7280" align="center" style={styles.subtitle}>
           React Native Wrapper
         </CivicText>
-        <CivicText variant="body" weight="regular" color="#9CA3AF" align="center" style={styles.description}>
+        <CivicText variant="body" weight="normal" color="#9CA3AF" align="center" style={styles.description}>
           Based on Civic Auth official documentation
         </CivicText>
       </View>
@@ -420,7 +420,7 @@ const DemoLoginScreen: React.FC = () => {
         <CivicText variant="caption" weight="medium" color="#6B7280" align="center">
           Powered by Civic Identity
         </CivicText>
-        <CivicText variant="caption" weight="regular" color="#9CA3AF" align="center" style={styles.docsText}>
+        <CivicText variant="caption" weight="normal" color="#9CA3AF" align="center" style={styles.docsText}>
           docs.civic.com
         </CivicText>
       </View>
