@@ -1,6 +1,5 @@
 <!--
   AndroidManifest.xml
-  -------------------
   English: This file defines essential information about your Android app, such as its package name, components, permissions, and more. It is required for every Android application and is read by the Android system at install time. This file is closely related to build.gradle and your Java/Kotlin source files.
   中文：此文件定义了您的 Android 应用的基本信息，如包名、组件、权限等。每个 Android 应用都必须有此文件，Android 系统在安装时会读取它。此文件与 build.gradle 及 Java/Kotlin 源码文件密切相关。
 -->
@@ -21,8 +20,10 @@
         <!--
           English: The main activity is the entry point of your app.
           中文：main activity 是应用的入口。
+          English: android:exported="true" is required for Android 12+ if the activity has an intent-filter. It means this activity can be launched by components of other apps.
+          中文：如果 activity 有 intent-filter，Android 12 及以上必须加 android:exported="true"，表示此 activity 可以被其他应用组件启动。
         -->
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

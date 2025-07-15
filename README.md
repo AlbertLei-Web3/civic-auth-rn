@@ -38,6 +38,18 @@ npm install civic-auth-rn
 
 ### Android Setup Android 设置
 
+#### Prerequisites 前置条件
+
+Make sure you have the following installed:
+确保您已安装以下内容：
+
+- **Java Development Kit (JDK)** - Version 11 or higher
+- **Android Studio** - Latest version with Android SDK
+- **Android SDK** - API level 23 or higher
+- **Gradle** - Version 8.14.3 (recommended for this project)
+
+#### Project Configuration 项目配置
+
 Add the following to your `android/settings.gradle`:
 
 ```gradle
@@ -64,6 +76,57 @@ protected List<ReactPackage> getPackages() {
     packages.add(new CivicAuthPackage());
     return packages;
 }
+```
+
+#### Gradle Wrapper Configuration Gradle 包装器配置
+
+The project uses a local Gradle installation to avoid slow downloads:
+项目使用本地 Gradle 安装以避免下载缓慢：
+
+```properties
+# android/gradle/wrapper/gradle-wrapper.properties
+distributionUrl=file\:///D:/Gradle/gradle-8.14.3-all.zip
+```
+
+#### Chinese Mirror Configuration 中国镜像配置
+
+For faster dependency downloads in China, the project is configured with Aliyun mirrors:
+为了在中国加快依赖下载速度，项目配置了阿里云镜像：
+
+```properties
+# android/gradle.properties
+systemProp.http.proxyHost=mirrors.aliyun.com
+systemProp.https.proxyHost=mirrors.aliyun.com
+systemProp.maven.repo.remote=https://maven.aliyun.com/repository/public
+```
+
+#### Running Gradle Commands 运行 Gradle 命令
+
+On Windows, use the gradlew.bat script:
+在 Windows 上，使用 gradlew.bat 脚本：
+
+```bash
+# Clean and build
+android\gradlew.bat clean
+android\gradlew.bat build
+
+# Run the app
+android\gradlew.bat installDebug
+```
+
+On Unix-like systems, use the gradlew script:
+在类 Unix 系统上，使用 gradlew 脚本：
+
+```bash
+# Make executable (first time only)
+chmod +x android/gradlew
+
+# Clean and build
+./android/gradlew clean
+./android/gradlew build
+
+# Run the app
+./android/gradlew installDebug
 ```
 
 ## Usage 使用方法

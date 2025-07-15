@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ic_launcher.xml
+  English: This is a simple vector drawable launcher icon for the CivicAuth app. It creates a blue circular icon with a "C" letter representing Civic.
+  中文：这是 CivicAuth 应用的简单矢量绘制启动器图标。它创建一个蓝色圆形图标，带有代表 Civic 的 "C" 字母。
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background"/>
+    <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+</adaptive-icon> 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  colors.xml
+  English: This file defines the color resources used throughout the CivicAuth app, including the Civic brand blue color for the launcher icon.
+  中文：此文件定义了 CivicAuth 应用中使用颜色资源，包括用于启动器图标的 Civic 品牌蓝色。
+-->
+<resources>
+    <!-- English: Civic brand blue color for launcher icon background -->
+    <!-- 中文：Civic 品牌蓝色，用于启动器图标背景 -->
+    <color name="ic_launcher_background">#2D8CFF</color>
+    
+    <!-- English: Additional app colors for future use -->
+    <!-- 中文：额外的应用颜色，供将来使用 -->
+    <color name="primary">#2D8CFF</color>
+    <color name="primary_dark">#1E6BC7</color>
+    <color name="accent">#FF6B35</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources> 

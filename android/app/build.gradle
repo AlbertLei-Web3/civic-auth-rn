@@ -8,12 +8,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 34 // English: The Android SDK version to compile against. 中文：编译时使用的 Android SDK 版本。
+    compileSdkVersion 36 // English: Updated to match installed API 36. 中文：升级为本地已安装的 API 36。
+
+    namespace 'com.civicauth' // English: Required for AGP 8.0+ to specify the package namespace. 中文：AGP 8.0+ 必须，指定包的命名空间。
 
     defaultConfig {
         applicationId "com.civicauth" // English: The unique package name for your app. 中文：应用的唯一包名。
         minSdkVersion 23 // English: Minimum Android version supported. 中文：支持的最低 Android 版本。
-        targetSdkVersion 34 // English: Target Android version. 中文：目标 Android 版本。
+        targetSdkVersion 36 // English: Updated to match installed API 36. 中文：升级为本地已安装的 API 36。
         versionCode 1 // English: App version code. 中文：应用版本号。
         versionName "1.0" // English: App version name. 中文：应用版本名。
     }

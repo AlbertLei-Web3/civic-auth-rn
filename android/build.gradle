@@ -25,36 +25,45 @@ buildscript {
         reactNativeVersion = "0.80.1"
     }
     repositories {
+        // English: Use official repositories for buildscript to avoid mirror issues
+        // 中文：buildscript 使用官方仓库避免镜像问题
         google()
         mavenCentral()
+        // English: Add Huawei mirror as backup for better reliability in China
+        // 中文：添加华为镜像作为备份，在中国有更好的可靠性
+        maven { url 'https://repo.huaweicloud.com/repository/maven' }
     }
     dependencies {
         // English: Android Gradle Plugin - required for building Android apps
         // 中文：Android Gradle 插件 - 构建 Android 应用必需
-        classpath("com.android.tools.build:gradle:8.1.1")
+        classpath('com.android.tools.build:gradle:8.11.1')
         // English: Kotlin Gradle Plugin - for Kotlin support
         // 中文：Kotlin Gradle 插件 - 用于 Kotlin 支持
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     }
 }
 
-// Aliyun Maven Mirrors for China 国内阿里云 Maven 镜像，加速依赖下载
-// English: These mirrors will speed up dependency downloads in China.
-// 中文：这些镜像会加快在中国的依赖下载速度。
+// Optimized Maven Repository Configuration for China 优化的中国 Maven 仓库配置
+// English: This configuration uses a mix of official and reliable mirror repositories to ensure successful builds in China.
+// 中文：此配置使用官方和可靠镜像仓库的组合，确保在中国成功构建。
 allprojects {
     repositories {
-        // Aliyun Google Maven 镜像
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        // Aliyun Maven Central 镜像
-        maven { url 'https://maven.aliyun.com/repository/central' }
-        // Aliyun Public 镜像
-        maven { url 'https://maven.aliyun.com/repository/public' }
-        // Aliyun Gradle Plugin 镜像
-        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        // 官方仓库
+        // English: Official repositories first for reliability
+        // 中文：官方仓库优先，确保可靠性
         google()
         mavenCentral()
-        // React Native 相关
+        
+        // English: Huawei Cloud mirror as primary backup (more reliable than Aliyun for some packages)
+        // 中文：华为云镜像作为主要备份（对某些包比阿里云更可靠）
+        maven { url 'https://repo.huaweicloud.com/repository/maven' }
+        
+        // English: Aliyun mirrors as secondary backup
+        // 中文：阿里云镜像作为次要备份
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        
+        // English: React Native specific repositories
+        // 中文：React Native 特定仓库
         maven { url("$rootDir/../node_modules/react-native/android") }
         maven { url("$rootDir/../node_modules/jsc-android/dist") }
     }
