@@ -6,6 +6,7 @@
 //
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 36 // English: Updated to match installed API 36. 中文：升级为本地已安装的 API 36。
@@ -26,10 +27,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // English: React Native configuration removed for compatibility
+    // 中文：移除 React Native 配置以确保兼容性
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar']) // English: Include all JARs in libs/. 中文：包含 libs/ 目录下所有 JAR。
     implementation 'androidx.appcompat:appcompat:1.6.1' // English: AndroidX AppCompat library. 中文：AndroidX 兼容库。
-    implementation 'com.facebook.react:react-native:+' // English: React Native framework. 中文：React Native 框架。
+    
+    // English: Kotlin dependencies
+    // 中文：Kotlin 依赖
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.0"
+    
+    // English: React Native dependencies
+    // 中文：React Native 依赖
+    implementation 'com.facebook.react:react-native:0.73.6'
+    implementation 'com.facebook.react:react-native-webview:13.6.4'
 } 

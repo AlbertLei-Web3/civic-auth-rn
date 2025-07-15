@@ -22,7 +22,7 @@ buildscript {
         
         // English: We use React Native's version of React Native
         // 中文：我们使用 React Native 的 React Native 版本
-        reactNativeVersion = "0.80.1"
+        reactNativeVersion = "0.73.6"
     }
     repositories {
         // English: Use official repositories for buildscript to avoid mirror issues
@@ -40,6 +40,8 @@ buildscript {
         // English: Kotlin Gradle Plugin - for Kotlin support
         // 中文：Kotlin Gradle 插件 - 用于 Kotlin 支持
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        // English: React Native Gradle Plugin removed for compatibility
+        // 中文：移除 React Native Gradle 插件以确保兼容性
     }
 }
 
